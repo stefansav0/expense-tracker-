@@ -3,6 +3,7 @@
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import { Timestamp } from "firebase/firestore";
+import { useEffect, useState } from "react";
 
 interface BlogCardProps {
   id?: string;
@@ -19,13 +20,19 @@ export default function BlogCard({
   imageUrl,
   createdAt,
 }: BlogCardProps) {
-  const formattedDate = createdAt
-    ? createdAt.toDate().toLocaleDateString("en-IN", {
+  const [formattedDate, setFormattedDate] = useState("");
+
+  useEffect(() => {
+    if (createdAt) {
+      const date = createdAt.toDate();
+      const formatted = date.toLocaleDateString("en-IN", {
         year: "numeric",
         month: "short",
         day: "numeric",
-      })
-    : "";
+      });
+      setFormattedDate(formatted);
+    }
+  }, [createdAt]);
 
   return (
     <div className="bg-white dark:bg-gray-800 shadow-md hover:shadow-lg rounded-lg overflow-hidden transition-all duration-300">
