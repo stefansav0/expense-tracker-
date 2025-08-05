@@ -6,8 +6,15 @@ interface BlogPostPageProps {
   params: { id: string };
 }
 
+interface BlogPost {
+  title: string;
+  content: string;
+  imageUrl?: string;
+  createdAt?: { seconds: number; nanoseconds: number };
+}
+
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const id = params?.id;
+  const id: string = params.id;
 
   try {
     const docRef = doc(db, "posts", id);
@@ -15,9 +22,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
     if (!docSnap.exists()) return notFound();
 
-    const post = docSnap.data();
+    const post = docSnap.data() as BlogPost;
+
     const createdAt = post.createdAt?.seconds
-      ? new Date(post.createdAt.seconds * 1000).toLocaleDateString()
+      ? new Date(post.createdAt.seconds * 1000).toLocaleDateString("en-IN", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
       : "";
 
     return (
