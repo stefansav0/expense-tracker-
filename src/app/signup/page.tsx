@@ -1,4 +1,3 @@
-// app/signup/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -15,6 +14,7 @@ export default function SignupPage() {
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -23,10 +23,18 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) {
       setError("Please enter a valid email.");
+      setLoading(false);
+      return;
+    }
+
+    if (form.password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      setLoading(false);
       return;
     }
 
@@ -35,13 +43,19 @@ export default function SignupPage() {
       router.push("/dashboard");
     } catch (err: any) {
       setError(err.message || "Signup failed.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
-      <h2 className="text-2xl font-semibold mb-4">Sign Up</h2>
-      {error && <p className="text-red-500 mb-3">{error}</p>}
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white dark:bg-gray-900 rounded-xl shadow-md">
+      <h2 className="text-2xl font-semibold mb-4 text-center dark:text-white">
+        Create an Account
+      </h2>
+
+      {error && <p className="text-red-500 mb-3 text-center">{error}</p>}
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           name="name"
@@ -49,32 +63,36 @@ export default function SignupPage() {
           placeholder="Full Name"
           value={form.name}
           onChange={handleChange}
-          className="w-full px-4 py-2 border rounded"
+          className="w-full px-4 py-2 border rounded dark:bg-gray-800 dark:text-white"
           required
         />
+
         <input
           name="email"
           type="email"
           placeholder="Email"
           value={form.email}
           onChange={handleChange}
-          className="w-full px-4 py-2 border rounded"
+          className="w-full px-4 py-2 border rounded dark:bg-gray-800 dark:text-white"
           required
         />
+
         <input
           name="password"
           type="password"
           placeholder="Password"
           value={form.password}
           onChange={handleChange}
-          className="w-full px-4 py-2 border rounded"
+          className="w-full px-4 py-2 border rounded dark:bg-gray-800 dark:text-white"
           required
         />
+
         <button
           type="submit"
-          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+          disabled={loading}
+          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:opacity-60"
         >
-          Sign Up
+          {loading ? "Signing up..." : "Sign Up"}
         </button>
       </form>
     </div>

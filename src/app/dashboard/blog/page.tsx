@@ -1,31 +1,34 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { db, storage } from '@/utils/firebase';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
+import { useState } from "react";
+import { db, storage } from "@/utils/firebase";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 
 export default function BlogDashboard() {
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
   const [image, setImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState('');
+  const [previewUrl, setPreviewUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState('');
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
   const editor = useEditor({
     extensions: [StarterKit],
-    content: '',
+    content: "",
   });
 
-  const handlePost = async (e: any) => {
+  const handlePost = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setSuccess('');
+    setSuccess("");
+    setError("");
 
     try {
-      let imageUrl = '';
+      let imageUrl = "";
+
       if (image) {
         const imgRef = ref(storage, `blog_images/${Date.now()}_${image.name}`);
         await uploadBytes(imgRef, image);
@@ -34,33 +37,41 @@ export default function BlogDashboard() {
 
       const content = editor?.getHTML();
 
-      await addDoc(collection(db, 'posts'), {
-        title,
+      if (!content || !title.trim()) {
+        setError("❌ Title and content are required.");
+        setLoading(false);
+        return;
+      }
+
+      await addDoc(collection(db, "posts"), {
+        title: title.trim(),
         content,
         imageUrl,
         createdAt: serverTimestamp(),
       });
 
-      setTitle('');
-      editor?.commands.setContent('');
+      // Reset form
+      setTitle("");
+      editor?.commands.setContent("");
       setImage(null);
-      setPreviewUrl('');
-      setSuccess('✅ Blog post created!');
-    } catch (error) {
-      console.error('Error:', error);
+      setPreviewUrl("");
+      setSuccess("✅ Blog post created!");
+    } catch (err) {
+      console.error("Error posting blog:", err);
+      setError("❌ Failed to publish blog. Please try again.");
     }
 
     setLoading(false);
   };
 
-  const handleImageChange = (e: any) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    setImage(file || null);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setPreviewUrl(reader.result as string);
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+
+    setImage(file);
+    const reader = new FileReader();
+    reader.onloadend = () => setPreviewUrl(reader.result as string);
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -69,12 +80,12 @@ export default function BlogDashboard() {
         Create New Blog Post
       </h2>
 
-      {success && (
-        <p className="text-green-600 text-center font-medium mb-4">{success}</p>
-      )}
+      {success && <p className="text-green-600 text-center mb-4">{success}</p>}
+      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
       <form onSubmit={handlePost} className="space-y-6">
         <input
+          type="text"
           className="w-full p-3 border rounded dark:bg-gray-800 dark:text-white"
           placeholder="Blog Title"
           value={title}
@@ -107,7 +118,7 @@ export default function BlogDashboard() {
           disabled={loading}
           className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
         >
-          {loading ? 'Posting...' : 'Publish Blog'}
+          {loading ? "Posting..." : "Publish Blog"}
         </button>
       </form>
     </div>

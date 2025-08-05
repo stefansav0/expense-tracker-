@@ -11,6 +11,7 @@ export default function LoginPage() {
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,12 +19,16 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+
     try {
-      setError("");
       await login(form.email, form.password);
       router.push("/dashboard");
     } catch (err) {
       setError("Invalid credentials. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,9 +64,10 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition-colors"
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition-colors disabled:opacity-60"
           >
-            Log In
+            {loading ? "Logging in..." : "Log In"}
           </button>
         </form>
 

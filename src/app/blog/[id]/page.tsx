@@ -14,7 +14,7 @@ interface BlogPost {
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const id: string = params.id;
+  const id = params?.id;
 
   try {
     const docRef = doc(db, "posts", id);
@@ -34,9 +34,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
     return (
       <div className="max-w-3xl mx-auto p-6 mt-10">
-        <h1 className="text-4xl font-bold mb-4 dark:text-white">{post.title}</h1>
+        <h1 className="text-4xl font-bold mb-4 dark:text-white">
+          {post.title}
+        </h1>
 
         {post.imageUrl && (
+          // Use next/image for optimization if needed
           <img
             src={post.imageUrl}
             alt={post.title}

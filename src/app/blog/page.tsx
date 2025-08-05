@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, Timestamp } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import BlogCard from "@/components/BlogCard";
 
@@ -10,7 +10,7 @@ interface BlogPost {
   title: string;
   imageUrl?: string;
   content: string;
-  createdAt?: { seconds: number; nanoseconds: number };
+  createdAt?: Timestamp;
 }
 
 export default function BlogPage() {
@@ -24,17 +24,25 @@ export default function BlogPage() {
         const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
         const snapshot = await getDocs(q);
 
-        const fetchedPosts: BlogPost[] = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as BlogPost[];
+        const fetchedPosts: BlogPost[] = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            title: data.title,
+            content: data.content,
+            imageUrl: data.imageUrl || "",
+            createdAt: data.createdAt as Timestamp, // ✅ casting here
+          };
+        });
 
         setPosts(fetchedPosts);
-      } catch (err: any) {
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred while loading blog posts.");
+        }
         console.error("Error fetching posts:", err);
-        setError(
-          err?.message || "Something went wrong while loading blog posts."
-        );
       } finally {
         setLoading(false);
       }
@@ -49,26 +57,22 @@ export default function BlogPage() {
         Blog & Financial Tips
       </h1>
 
-      {/* Loading */}
       {loading && (
         <p className="text-center text-gray-500 dark:text-gray-400">
           ⏳ Fetching the latest posts...
         </p>
       )}
 
-      {/* Error */}
       {!loading && error && (
         <p className="text-center text-red-500 dark:text-red-400">{error}</p>
       )}
 
-      {/* No Posts */}
       {!loading && !error && posts.length === 0 && (
         <p className="text-center text-gray-500 dark:text-gray-400">
           🚫 No blog posts found.
         </p>
       )}
 
-      {/* Blog List */}
       {!loading && posts.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((post) => (
