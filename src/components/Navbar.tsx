@@ -26,96 +26,97 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="w-64 min-h-screen bg-white text-gray-800 p-6 shadow-lg flex flex-col justify-between">
-      <div>
-        {/* User Info */}
+    <nav className="w-full bg-white text-gray-800 shadow-md px-6 py-3 flex justify-between items-center">
+      {/* Left - Branding or Logo */}
+      <div className="flex items-center gap-3">
+        <Link href="/dashboard">
+          <span className="text-xl font-bold text-blue-600">Zoho Clone</span>
+        </Link>
+      </div>
+
+      {/* Center - Navigation Links */}
+      <ul className="flex gap-6 items-center text-sm font-medium">
+        <li>
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2 hover:text-blue-600 transition"
+          >
+            <MdDashboard /> Dashboard
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/expense"
+            className="flex items-center gap-2 hover:text-blue-600 transition"
+          >
+            <MdMoneyOff /> Expenses
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/income"
+            className="flex items-center gap-2 hover:text-blue-600 transition"
+          >
+            <MdAttachMoney /> Income
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/calculators"
+            className="flex items-center gap-2 hover:text-blue-600 transition"
+          >
+            <MdCalculate /> Calculators
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/invoice"
+            className="flex items-center gap-2 hover:text-blue-600 transition"
+          >
+            <FaFileInvoiceDollar /> Invoice
+          </Link>
+        </li>
+      </ul>
+
+      {/* Right - User Info or Login/Logout */}
+      <div className="flex items-center gap-4">
         {user ? (
-          <div className="mb-6 flex items-center gap-3 border-b border-gray-300 pb-4">
-            {user.photoURL ? (
-              <Image
-                src={user.photoURL}
-                alt="User Photo"
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-lg font-semibold">
-                {user.email?.charAt(0).toUpperCase()}
+          <>
+            <div className="flex items-center gap-2">
+              {user.photoURL ? (
+                <Image
+                  src={user.photoURL}
+                  alt="User"
+                  width={32}
+                  height={32}
+                  className="rounded-full"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-semibold">
+                  {user.email?.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div className="hidden sm:block">
+                <p className="text-sm font-semibold">{user.displayName || "User"}</p>
+                <p className="text-xs text-gray-500 truncate max-w-[120px]">{user.email}</p>
               </div>
-            )}
-            <div>
-              <p className="font-semibold">{user.displayName || "User"}</p>
-              <p className="text-sm text-gray-600 truncate max-w-[150px]">
-                {user.email}
-              </p>
             </div>
-          </div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1 text-sm text-white bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition"
+            >
+              <FaSignOutAlt /> Logout
+            </button>
+          </>
         ) : (
           <button
             onClick={() => router.push("/login")}
-            className="flex items-center gap-2 mb-6 px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            className="flex items-center gap-1 text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 transition"
           >
             <FaSignInAlt /> Login
           </button>
         )}
-
-        {/* Navigation Links */}
-        <ul className="space-y-3">
-          <li>
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-200 transition"
-            >
-              <MdDashboard /> Dashboard
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/expense"
-              className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-200 transition"
-            >
-              <MdMoneyOff /> Expenses
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/income"
-              className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-200 transition"
-            >
-              <MdAttachMoney /> Income
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/calculators"
-              className="flex items-center gap-3 px-3 py-2 rounded hover:bg-green-100 transition"
-            >
-              <MdCalculate /> Financial Calculators
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/invoice"
-              className="flex items-center gap-3 px-3 py-2 rounded hover:bg-purple-100 transition"
-            >
-              <FaFileInvoiceDollar /> Invoice Generator
-            </Link>
-          </li>
-        </ul>
       </div>
-
-      {/* Logout Button */}
-      {user && (
-        <div className="mt-8">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-          >
-            <FaSignOutAlt /> Logout
-          </button>
-        </div>
-      )}
     </nav>
   );
 }

@@ -1,12 +1,15 @@
+// components/BodyWrapper.tsx
 'use client';
 
-import Navbar from '@/components/Navbar';
+import Navbar from './Navbar';
 
 export default function BodyWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex bg-gray-100 text-gray-900">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 p-6">{children}</main>
+      <main className="flex-1 pt-20 px-4 bg-gray-50 dark:bg-gray-900 transition-colors">
+        {children}
+      </main>
     </div>
   );
 }
