@@ -34,7 +34,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="text-blue-600 font-bold text-xl">
-          Zoho <span className="text-gray-900">Clone</span>
+          Expense <span className="text-gray-900">Tracker</span>
         </Link>
 
         {/* Mobile toggle */}
@@ -53,14 +53,14 @@ export default function Navbar() {
           <li><Link href="/calculators" className="hover:text-blue-600 flex items-center gap-1"><MdCalculate />Calculators</Link></li>
           <li><Link href="/invoice" className="hover:text-blue-600 flex items-center gap-1"><FaFileInvoiceDollar />Invoice</Link></li>
           {user && (
-            <li className="flex items-center gap-2">
+            <li className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 {user.photoURL ? (
                   <Image
                     src={user.photoURL}
                     alt="User"
-                    width={30}
-                    height={30}
+                    width={32}
+                    height={32}
                     className="rounded-full"
                   />
                 ) : (
@@ -68,14 +68,13 @@ export default function Navbar() {
                     {user.email?.charAt(0).toUpperCase()}
                   </div>
                 )}
-                <div className="text-sm">
+                <div className="text-sm leading-tight">
                   <p className="font-medium">{user.displayName || "RAVI KUMAR"}</p>
-                  <p className="text-xs text-gray-600">{user.email}</p>
                 </div>
               </div>
               <button
                 onClick={handleLogout}
-                className="ml-4 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-1"
+                className="ml-2 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-1"
               >
                 <FaSignOutAlt /> Logout
               </button>
@@ -97,7 +96,6 @@ export default function Navbar() {
               <li className="flex flex-col gap-1 border-t pt-2">
                 <div className="text-sm">
                   <p className="font-medium">{user.displayName || "RAVI KUMAR"}</p>
-                  <p className="text-xs text-gray-600">{user.email}</p>
                 </div>
                 <button
                   onClick={() => {

@@ -54,7 +54,7 @@ export default function DashboardPage() {
 
     const q = query(
       collection(db, "transactions"),
-      where("uid", "==", user.uid), // ✅ Use "uid" instead of "userId"
+      where("uid", "==", user.uid),
       orderBy("createdAt", "desc")
     );
 
@@ -84,11 +84,7 @@ export default function DashboardPage() {
       data = data.filter((t) => dayjs(t.createdAt).isAfter(now.startOf("week")));
     } else if (filterType === "This Month") {
       data = data.filter((t) => dayjs(t.createdAt).isAfter(now.startOf("month")));
-    } else if (
-      filterType === "Custom" &&
-      customRange.from &&
-      customRange.to
-    ) {
+    } else if (filterType === "Custom" && customRange.from && customRange.to) {
       const from = dayjs(customRange.from);
       const to = dayjs(customRange.to).endOf("day");
       data = data.filter(
@@ -106,7 +102,6 @@ export default function DashboardPage() {
   }, [transactions, filterType, customRange, sortOrder]);
 
   const deleteTrx = async (id: string) => {
-    // ✅ Delete directly from /transactions
     await deleteDoc(doc(db, "transactions", id));
   };
 
@@ -142,32 +137,22 @@ export default function DashboardPage() {
   if (!user) return <p className="p-6">Loading user...</p>;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Top Navbar */}
-      <div className="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-800 shadow">
-        <h1 className="text-xl font-bold text-gray-800 dark:text-white">Expense Tracker</h1>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => exportToPDF(filtered)}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
-          >
-            Download PDF
-          </button>
-          {user.photoURL && (
-            <img
-              src={user.photoURL}
-              alt="Profile"
-              className="w-8 h-8 rounded-full border"
-            />
-          )}
-          <span className="text-sm text-gray-700 dark:text-gray-300">
-            {user.email}
-          </span>
-        </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-10">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-6 py-4 bg-white dark:bg-gray-800 shadow gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">
+          Expense Tracker
+        </h1>
+        <button
+          onClick={() => exportToPDF(filtered)}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
+        >
+          Download PDF
+        </button>
       </div>
 
       {/* Filters */}
-      <div className="px-6 py-4 flex flex-wrap gap-3 items-center bg-white dark:bg-gray-800 shadow-sm">
+      <div className="px-4 sm:px-6 py-4 flex flex-wrap gap-3 items-center bg-white dark:bg-gray-800 shadow-sm">
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
@@ -209,21 +194,21 @@ export default function DashboardPage() {
         </select>
       </div>
 
-      {/* Summary Boxes */}
-      <div className="px-6 py-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow font-semibold">
+      {/* Summary */}
+      <div className="px-4 sm:px-6 py-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow font-semibold text-center">
           Income: ₹{totalIncome}
         </div>
-        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow font-semibold">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow font-semibold text-center">
           Expense: ₹{totalExpense}
         </div>
-        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow font-semibold">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow font-semibold text-center">
           Balance: ₹{totalIncome - totalExpense}
         </div>
       </div>
 
       {/* Charts */}
-      <div className="px-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
           <h2 className="font-bold mb-2">Category Breakdown</h2>
           <ResponsiveContainer width="100%" height={250}>
@@ -250,13 +235,13 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Transactions Table */}
-      <div className="px-6 py-6 bg-white dark:bg-gray-800 mt-6 rounded shadow overflow-auto">
+      {/* Transactions */}
+      <div className="px-4 sm:px-6 py-6 bg-white dark:bg-gray-800 mt-6 rounded shadow overflow-auto">
         <h2 className="font-semibold mb-3">All Transactions</h2>
         {loading ? (
           <p className="text-gray-500">Loading...</p>
         ) : (
-          <table className="w-full text-sm">
+          <table className="w-full text-sm min-w-[600px]">
             <thead className="bg-gray-200 dark:bg-gray-700">
               <tr>
                 <th className="p-2 text-left">Date</th>
@@ -270,9 +255,7 @@ export default function DashboardPage() {
               {filtered.length > 0 ? (
                 filtered.map((t) => (
                   <tr key={t.id} className="border-t">
-                    <td className="p-2">
-                      {dayjs(t.createdAt).format("YYYY-MM-DD")}
-                    </td>
+                    <td className="p-2">{dayjs(t.createdAt).format("YYYY-MM-DD")}</td>
                     <td className="p-2 capitalize">{t.type}</td>
                     <td className="p-2">{t.category}</td>
                     <td className="p-2">₹{t.amount}</td>
