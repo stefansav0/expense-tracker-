@@ -7,6 +7,8 @@ import {
   FaSignOutAlt,
   FaSignInAlt,
   FaFileInvoiceDollar,
+  FaBars,
+  FaTimes,
 } from "react-icons/fa";
 import {
   MdDashboard,
@@ -15,10 +17,12 @@ import {
   MdCalculate,
 } from "react-icons/md";
 import Image from "next/image";
+import { useState } from "react";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -26,97 +30,89 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="w-full bg-white text-gray-800 shadow-md px-6 py-3 flex justify-between items-center">
-      {/* Left - Branding or Logo */}
-      <div className="flex items-center gap-3">
-        <Link href="/dashboard">
-          <span className="text-xl font-bold text-blue-600">Zoho Clone</span>
+    <nav className="w-full bg-white shadow-md fixed top-0 left-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="text-blue-600 font-bold text-xl">
+          Zoho <span className="text-gray-900">Clone</span>
         </Link>
-      </div>
 
-      {/* Center - Navigation Links */}
-      <ul className="flex gap-6 items-center text-sm font-medium">
-        <li>
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-2 hover:text-blue-600 transition"
-          >
-            <MdDashboard /> Dashboard
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/expense"
-            className="flex items-center gap-2 hover:text-blue-600 transition"
-          >
-            <MdMoneyOff /> Expenses
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/income"
-            className="flex items-center gap-2 hover:text-blue-600 transition"
-          >
-            <MdAttachMoney /> Income
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/calculators"
-            className="flex items-center gap-2 hover:text-blue-600 transition"
-          >
-            <MdCalculate /> Calculators
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/invoice"
-            className="flex items-center gap-2 hover:text-blue-600 transition"
-          >
-            <FaFileInvoiceDollar /> Invoice
-          </Link>
-        </li>
-      </ul>
+        {/* Mobile toggle */}
+        <button
+          className="md:hidden text-2xl"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? <FaTimes /> : <FaBars />}
+        </button>
 
-      {/* Right - User Info or Login/Logout */}
-      <div className="flex items-center gap-4">
-        {user ? (
-          <>
-            <div className="flex items-center gap-2">
-              {user.photoURL ? (
-                <Image
-                  src={user.photoURL}
-                  alt="User"
-                  width={32}
-                  height={32}
-                  className="rounded-full"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-semibold">
-                  {user.email?.charAt(0).toUpperCase()}
+        {/* Desktop Menu */}
+        <ul className="hidden md:flex items-center gap-6">
+          <li><Link href="/dashboard" className="hover:text-blue-600 flex items-center gap-1"><MdDashboard />Dashboard</Link></li>
+          <li><Link href="/expense" className="hover:text-blue-600 flex items-center gap-1"><MdMoneyOff />Expenses</Link></li>
+          <li><Link href="/income" className="hover:text-blue-600 flex items-center gap-1"><MdAttachMoney />Income</Link></li>
+          <li><Link href="/calculators" className="hover:text-blue-600 flex items-center gap-1"><MdCalculate />Calculators</Link></li>
+          <li><Link href="/invoice" className="hover:text-blue-600 flex items-center gap-1"><FaFileInvoiceDollar />Invoice</Link></li>
+          {user && (
+            <li className="flex items-center gap-2">
+              <div className="flex items-center gap-2">
+                {user.photoURL ? (
+                  <Image
+                    src={user.photoURL}
+                    alt="User"
+                    width={30}
+                    height={30}
+                    className="rounded-full"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center font-semibold">
+                    {user.email?.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div className="text-sm">
+                  <p className="font-medium">{user.displayName || "RAVI KUMAR"}</p>
+                  <p className="text-xs text-gray-600">{user.email}</p>
                 </div>
-              )}
-              <div className="hidden sm:block">
-                <p className="text-sm font-semibold">{user.displayName || "User"}</p>
-                <p className="text-xs text-gray-500 truncate max-w-[120px]">{user.email}</p>
               </div>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1 text-sm text-white bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition"
-            >
-              <FaSignOutAlt /> Logout
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={() => router.push("/login")}
-            className="flex items-center gap-1 text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 transition"
-          >
-            <FaSignInAlt /> Login
-          </button>
-        )}
+              <button
+                onClick={handleLogout}
+                className="ml-4 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-1"
+              >
+                <FaSignOutAlt /> Logout
+              </button>
+            </li>
+          )}
+        </ul>
       </div>
+
+      {/* Mobile Menu */}
+      {menuOpen && (
+        <div className="md:hidden bg-white border-t shadow-lg">
+          <ul className="flex flex-col px-4 py-3 space-y-3 text-sm">
+            <li><Link href="/dashboard" onClick={() => setMenuOpen(false)}>📊 Dashboard</Link></li>
+            <li><Link href="/expense" onClick={() => setMenuOpen(false)}>💸 Expenses</Link></li>
+            <li><Link href="/income" onClick={() => setMenuOpen(false)}>💰 Income</Link></li>
+            <li><Link href="/calculators" onClick={() => setMenuOpen(false)}>📈 Calculators</Link></li>
+            <li><Link href="/invoice" onClick={() => setMenuOpen(false)}>📄 Invoice</Link></li>
+            {user && (
+              <li className="flex flex-col gap-1 border-t pt-2">
+                <div className="text-sm">
+                  <p className="font-medium">{user.displayName || "RAVI KUMAR"}</p>
+                  <p className="text-xs text-gray-600">{user.email}</p>
+                </div>
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full text-left text-red-600 hover:underline"
+                >
+                  Logout
+                </button>
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
     </nav>
   );
 }
