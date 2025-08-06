@@ -63,51 +63,50 @@ export default function InvoicePage() {
     const pdf = new jsPDF("p", "mm", "a4");
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
-pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save(`${invoiceNumber}.pdf`);
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Invoice Generator (Full)</h1>
+    <div className="max-w-5xl mx-auto px-4 py-6 font-sans text-gray-800">
+      <h1 className="text-4xl font-bold mb-8 text-center">Professional Invoice Generator</h1>
 
       {/* Logo Upload */}
-      <div className="mb-4">
-        <label className="font-medium">Upload Logo</label>
+      <div className="mb-6 flex flex-col gap-2">
+        <label className="font-semibold">Upload Logo</label>
         <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setLogo)} />
         {logo && <img src={logo} alt="Logo" className="h-16 mt-2" />}
       </div>
 
-      {/* UPI QR Upload */}
-      <div className="mb-4">
-        <label className="font-medium">Upload UPI QR Code</label>
+      {/* QR Upload */}
+      <div className="mb-6 flex flex-col gap-2">
+        <label className="font-semibold">Upload UPI QR Code</label>
         <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setQrCode)} />
         {qrCode && <img src={qrCode} alt="QR Code" className="h-24 mt-2" />}
       </div>
 
       {/* Invoice Info */}
-      <div className="flex gap-4 mb-6">
+      <div className="grid md:grid-cols-2 gap-6 mb-6">
         <div>
-          <label>Invoice No.</label>
+          <label className="block font-medium mb-1">Invoice No.</label>
           <input value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)} className="p-2 border rounded w-full" />
         </div>
         <div>
-          <label>Date</label>
+          <label className="block font-medium mb-1">Date</label>
           <input value={invoiceDate} disabled className="p-2 border rounded w-full bg-gray-100" />
         </div>
       </div>
 
-      {/* Parties Info */}
+      {/* Sender and Client Info */}
       <div className="grid md:grid-cols-2 gap-6 mb-8">
         <div>
-          <h2 className="font-semibold mb-2">Sender Info</h2>
+          <h2 className="text-lg font-semibold mb-2">Sender Information</h2>
           <input placeholder="Name" value={sender.name} onChange={(e) => setSender({ ...sender, name: e.target.value })} className="w-full p-2 mb-2 border rounded" />
           <input placeholder="Address" value={sender.address} onChange={(e) => setSender({ ...sender, address: e.target.value })} className="w-full p-2 mb-2 border rounded" />
           <input placeholder="GSTIN" value={sender.gstin} onChange={(e) => setSender({ ...sender, gstin: e.target.value })} className="w-full p-2 border rounded" />
         </div>
         <div>
-          <h2 className="font-semibold mb-2">Client Info</h2>
+          <h2 className="text-lg font-semibold mb-2">Client Information</h2>
           <input placeholder="Name" value={client.name} onChange={(e) => setClient({ ...client, name: e.target.value })} className="w-full p-2 mb-2 border rounded" />
           <input placeholder="Email" value={client.email} onChange={(e) => setClient({ ...client, email: e.target.value })} className="w-full p-2 mb-2 border rounded" />
           <input placeholder="Address" value={client.address} onChange={(e) => setClient({ ...client, address: e.target.value })} className="w-full p-2 mb-2 border rounded" />
@@ -116,50 +115,49 @@ pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       </div>
 
       {/* Items Table */}
-      <div className="overflow-x-auto mb-6">
-        <table className="w-full text-sm border">
+      <div className="mb-6 overflow-x-auto">
+        <table className="w-full border text-sm">
           <thead className="bg-gray-100">
             <tr>
-              <th className="p-2">Description</th>
-              <th className="p-2">Qty</th>
-              <th className="p-2">Price</th>
-              <th className="p-2">Total</th>
-              <th className="p-2"></th>
+              <th className="p-2 border">Description</th>
+              <th className="p-2 border">Quantity</th>
+              <th className="p-2 border">Unit Price</th>
+              <th className="p-2 border">Amount</th>
+              <th className="p-2 border">Actions</th>
             </tr>
           </thead>
           <tbody>
             {items.map((item, i) => (
               <tr key={i}>
-                <td className="p-2"><input className="w-full border p-1" value={item.description} onChange={(e) => handleItemChange(i, "description", e.target.value)} /></td>
-                <td className="p-2"><input type="number" className="w-full border p-1" value={item.quantity} onChange={(e) => handleItemChange(i, "quantity", +e.target.value)} /></td>
-                <td className="p-2"><input type="number" className="w-full border p-1" value={item.price} onChange={(e) => handleItemChange(i, "price", +e.target.value)} /></td>
-                <td className="p-2">₹{(item.quantity * item.price).toFixed(2)}</td>
-                <td className="p-2"><button onClick={() => removeItem(i)} className="text-red-600">✕</button></td>
+                <td className="border p-2"><input className="w-full border p-1" value={item.description} onChange={(e) => handleItemChange(i, "description", e.target.value)} /></td>
+                <td className="border p-2"><input type="number" className="w-full border p-1" value={item.quantity} onChange={(e) => handleItemChange(i, "quantity", +e.target.value)} /></td>
+                <td className="border p-2"><input type="number" className="w-full border p-1" value={item.price} onChange={(e) => handleItemChange(i, "price", +e.target.value)} /></td>
+                <td className="border p-2">₹{(item.quantity * item.price).toFixed(2)}</td>
+                <td className="border p-2 text-center"><button onClick={() => removeItem(i)} className="text-red-500 hover:text-red-700">✕</button></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-
-      <button onClick={addItem} className="mb-6 px-4 py-2 bg-blue-600 text-white rounded">+ Add Item</button>
+      <button onClick={addItem} className="mb-8 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">+ Add Item</button>
 
       {/* Totals */}
-      <div className="text-right mb-6">
-        <div className="space-y-1">
-          <label>GST Rate (%)</label>
-          <input type="number" value={gstRate} onChange={(e) => setGstRate(Number(e.target.value))} className="w-32 p-2 border rounded" />
-          <p>Subtotal: ₹{subtotal.toFixed(2)}</p>
-          <p>CGST ({gstRate / 2}%): ₹{cgst.toFixed(2)}</p>
-          <p>SGST ({gstRate / 2}%): ₹{sgst.toFixed(2)}</p>
-          <p className="text-lg font-bold">Total: ₹{total.toFixed(2)}</p>
+      <div className="text-right mb-8 space-y-1">
+        <div>
+          <label className="mr-2 font-medium">GST Rate (%)</label>
+          <input type="number" value={gstRate} onChange={(e) => setGstRate(Number(e.target.value))} className="w-24 p-2 border rounded" />
         </div>
+        <p>Subtotal: ₹{subtotal.toFixed(2)}</p>
+        <p>CGST ({gstRate / 2}%): ₹{cgst.toFixed(2)}</p>
+        <p>SGST ({gstRate / 2}%): ₹{sgst.toFixed(2)}</p>
+        <p className="text-xl font-bold">Total: ₹{total.toFixed(2)}</p>
       </div>
 
-      {/* Bank Info */}
+      {/* Bank Info Toggle */}
       <div className="mb-6">
-        <label className="flex items-center space-x-2">
+        <label className="flex items-center gap-2 font-semibold">
           <input type="checkbox" checked={showBankDetails} onChange={() => setShowBankDetails(!showBankDetails)} />
-          <span className="font-semibold">Add Bank Details</span>
+          Add Bank Details
         </label>
         {showBankDetails && (
           <div className="mt-4 grid md:grid-cols-2 gap-4">
@@ -172,23 +170,22 @@ pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
         )}
       </div>
 
-      {/* Invoice Preview for PDF */}
+      {/* Invoice Preview Area (for PDF) */}
       <div
-  ref={invoiceRef}
-  className="bg-white text-black text-sm mx-auto p-10"
-  style={{
-    width: "210mm",
-    minHeight: "297mm",
-    boxSizing: "border-box",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-  }}
->
-
-        {logo && <img src={logo} alt="Logo" className="h-16 mb-2" />}
-        <h2 className="text-xl font-bold">Invoice</h2>
-        <p><strong>No:</strong> {invoiceNumber} | <strong>Date:</strong> {invoiceDate}</p>
+        ref={invoiceRef}
+        className="bg-white text-black text-sm mx-auto p-10 border shadow-lg"
+        style={{
+          width: "210mm",
+          minHeight: "297mm",
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        {logo && <img src={logo} alt="Logo" className="h-16 mb-4" />}
+        <h2 className="text-xl font-bold mb-2">Invoice</h2>
+        <p><strong>Invoice No:</strong> {invoiceNumber} | <strong>Date:</strong> {invoiceDate}</p>
         <hr className="my-2" />
         <p><strong>From:</strong> {sender.name}, {sender.address}, GSTIN: {sender.gstin}</p>
         <p><strong>To:</strong> {client.name}, {client.address}, GSTIN: {client.gstin}</p>
@@ -196,7 +193,7 @@ pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
         <table className="w-full border mt-4 text-xs">
           <thead>
             <tr>
-              <th className="border px-2 py-1">Item</th>
+              <th className="border px-2 py-1">Description</th>
               <th className="border px-2 py-1">Qty</th>
               <th className="border px-2 py-1">Price</th>
               <th className="border px-2 py-1">Total</th>
@@ -214,7 +211,7 @@ pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
           </tbody>
         </table>
 
-        <div className="mt-4 space-y-1">
+        <div className="mt-4 space-y-1 text-sm">
           <p>Subtotal: ₹{subtotal.toFixed(2)}</p>
           <p>CGST: ₹{cgst.toFixed(2)}</p>
           <p>SGST: ₹{sgst.toFixed(2)}</p>
@@ -222,17 +219,17 @@ pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
         </div>
 
         {showBankDetails && (
-          <div className="mt-6">
+          <div className="mt-6 text-sm">
             <h4 className="font-semibold mb-1">Bank Details</h4>
-            <p>{bank.accountName} | {bank.bankName} | A/C: {bank.accountNumber}</p>
-            <p>IFSC: {bank.ifsc}, Branch: {bank.branch}</p>
+            <p>{bank.accountName} | {bank.bankName}</p>
+            <p>A/C: {bank.accountNumber} | IFSC: {bank.ifsc} | Branch: {bank.branch}</p>
           </div>
         )}
 
         {qrCode && (
           <div className="mt-6">
-            <h4 className="font-semibold mb-1">Scan UPI QR to Pay</h4>
-            <img src={qrCode} alt="UPI QR" className="h-24" />
+            <h4 className="font-semibold mb-1">Scan to Pay via UPI</h4>
+            <img src={qrCode} alt="UPI QR Code" className="h-24" />
           </div>
         )}
 
@@ -242,8 +239,9 @@ pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
         </div>
       </div>
 
-      <button onClick={downloadPDF} className="mt-6 px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-        Download Invoice PDF
+      {/* Download Button */}
+      <button onClick={downloadPDF} className="mt-10 px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700">
+        Download PDF
       </button>
     </div>
   );

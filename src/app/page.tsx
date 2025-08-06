@@ -18,7 +18,7 @@ export default function Home() {
     <main className="flex items-center justify-center h-screen text-center px-4 bg-gray-50 dark:bg-gray-900 transition-colors">
       <div className="max-w-xl">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
-          Zoho Expense Clone
+          Expense Clone
         </h1>
         <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
           Track your income & expenses effortlessly with features like recurring

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* System font stack */
+/* Root CSS variables */
 :root {
   --background: #ffffff;
   --foreground: #111111;
@@ -13,21 +13,9 @@
     "Liberation Mono", "Courier New", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #f4f4f5;
-  }
-}
-
-/* Apply dark mode class for custom background and foreground */
+/* Global styles */
 html {
   scroll-behavior: smooth;
-}
-
-html.dark {
-  background-color: var(--background);
-  color: var(--foreground);
 }
 
 body {
@@ -38,7 +26,7 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
-/* Smooth image scaling */
+/* Images */
 img {
   max-width: 100%;
   display: block;
@@ -63,15 +51,11 @@ img {
   color: #2563eb;
 }
 
-/* Utility classes for Tiptap editor */
+/* Tiptap editor */
 .tiptap {
   min-height: 200px;
   padding: 1rem;
   background-color: #f9fafb;
   border-radius: 0.5rem;
-}
-
-.dark .tiptap {
-  background-color: #1f2937;
-  color: #f3f4f6;
+  color: #111827;
 }
