@@ -15,8 +15,8 @@ export default function Home() {
   }, [user, loading, router]);
 
   return (
-    <main className="flex items-center justify-center h-screen text-center px-4 bg-gray-50 dark:bg-gray-900 transition-colors">
-      <div className="max-w-xl">
+    <main className="flex flex-col items-center justify-center h-screen text-center px-4 bg-gray-50 dark:bg-gray-900 transition-colors">
+      <div className="max-w-xl mb-6">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
           Expense Clone
         </h1>
