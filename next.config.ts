@@ -4,13 +4,14 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    appDir: true, // 👈 Required for using the app/ directory
+    appDir: true, // Required for app router
   },
+  output: 'standalone', // ✅ Fixes the Vercel deployment issue
   eslint: {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ["firebasestorage.googleapis.com"], // ✅ Add more domains if needed
+    domains: ['firebasestorage.googleapis.com'],
   },
 };
 
